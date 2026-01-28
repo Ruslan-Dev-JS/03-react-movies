@@ -7,8 +7,11 @@ interface SearchBarProps {
 }
 
 export default function SearchBar({ onSubmit }: SearchBarProps) {
-  // Функція обробки FormData через action
-  const handleAction = (formData: FormData) => {
+  // Дії при сабміті через FormData
+  const handleAction = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault(); // Form Actions API поки не працює в чистому HTML, тому preventDefault потрібен
+
+    const formData = new FormData(e.currentTarget);
     const query = (formData.get("query") as string)?.trim();
 
     if (!query) {
@@ -30,7 +33,7 @@ export default function SearchBar({ onSubmit }: SearchBarProps) {
         >
           Powered by TMDB
         </a>
-        <form className={css.form} action={handleAction}>
+        <form className={css.form} onSubmit={handleAction}>
           <input
             className={css.input}
             type="text"
