@@ -1,4 +1,3 @@
-import { FormEvent } from "react";
 import toast from "react-hot-toast";
 import css from "./SearchBar.module.css";
 
@@ -6,12 +5,10 @@ interface SearchBarProps {
   onSubmit: (query: string) => void;
 }
 
+// Цей компонент імітує Form Actions API
 export default function SearchBar({ onSubmit }: SearchBarProps) {
-  // Дії при сабміті через FormData
-  const handleAction = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault(); // Form Actions API поки не працює в чистому HTML, тому preventDefault потрібен
-
-    const formData = new FormData(e.currentTarget);
+  // Функція, яка приймає FormData як аргумент
+  const handleAction = (formData: FormData) => {
     const query = (formData.get("query") as string)?.trim();
 
     if (!query) {
@@ -33,7 +30,15 @@ export default function SearchBar({ onSubmit }: SearchBarProps) {
         >
           Powered by TMDB
         </a>
-        <form className={css.form} onSubmit={handleAction}>
+        {/* Замість onSubmit ставимо action */}
+        <form
+          className={css.form}
+          action={(e: Event) => {
+            e.preventDefault();
+            const formData = new FormData(e.currentTarget as HTMLFormElement);
+            handleAction(formData);
+          }}
+        >
           <input
             className={css.input}
             type="text"
